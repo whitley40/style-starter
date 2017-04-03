@@ -1,0 +1,39 @@
+// rem size calculations -------------------------------------------------------
+//example usage -  @include font-size(14px); , spits out 14px/0.8rem
+
+@function calculateRem($size) {
+  $remSize: $size / 16px;
+  @return $remSize * 1rem;
+}
+
+@mixin font-size($size) {
+  font-size: $size;
+  font-size: calculateRem($size);
+}
+
+
+// media query simplicity -------------------------------------------------------
+/*
+remember - mobile first!!
+@include bp-medium {
+} 
+*/
+
+@mixin bp-medium {
+  @media only screen and (min-width: 600px) {
+    @content;
+  }
+}
+
+
+@mixin bp-large {
+  @media only screen and (min-width: 800px) {
+    @content;
+  }
+}
+
+@mixin bp-x-large {
+  @media only screen and (min-width: 1000px) {
+    @content;
+  }
+}
