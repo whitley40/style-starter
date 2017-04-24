@@ -1,1 +1,1 @@
-Bootstrap Template for Style Projects
+Bootstrap Template beginning any Style Projects
