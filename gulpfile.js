@@ -1,76 +1,86 @@
-var gulp = require('gulp'),
-sass = require('gulp-sass'),
-autoprefixer = require('gulp-autoprefixer'),
-minifycss = require('gulp-clean-css'),
-uglify = require('gulp-uglify'),
-rename = require('gulp-rename'),
-concat = require('gulp-concat'),
-maps = require('gulp-sourcemaps'),
-mamp = require('gulp-mamp'),
-browsersync = require('browser-sync').create(),
-del = require('del');
+/* require - comment/remove as needed - more packages at https://www.npmjs.com/ */
+
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
+const cleancss = require('gulp-clean-css');
+const rename = require('gulp-rename');
+const browsersync = require('browser-sync').create();
+const clean = require('gulp-clean');
+//const ts = require('gulp-typescript');
+//const uglify = require('gulp-uglify');
+//const concat = require('gulp-concat');
+//const maps = require('gulp-sourcemaps');
+//const mamp = require('gulp-mamp');
 
 /* compiling the sass and autoprefix */
 
-gulp.task('compileSass', function() {
-    return gulp.src('scss/styles.scss')
+gulp.task('compileSass', () => {
+    return gulp.src('src/scss/style.scss')
     .pipe(sass())
-    .pipe(rename('blog-style.css'))
     .pipe(autoprefixer())
+    .pipe(cleancss())
     .pipe(gulp.dest('dist/css'));
-});
-
+  });
 
 /* move images across */
 
-gulp.task('moveImgs', function() {
-    return gulp.src('imgs/**')
+gulp.task('moveImgs', () => {
+    return gulp.src('src/imgs/**')
     .pipe(gulp.dest('dist/imgs'));
+  });
+
+/* move html across */
+
+gulp.task('moveHTML', () => {
+    return gulp.src('src/*.html')
+    .pipe(gulp.dest('dist'));
 });
 
-/* move images across */
+/* move fonts across */
 
-gulp.task('moveHTML', function() {
-    return gulp.src('*.html')
-    .pipe(gulp.dest('dist'));
+gulp.task('moveFonts', () => {
+    return gulp.src('src/fonts/**')
+    .pipe(gulp.dest('dist/fonts'));
 });
 
 /* run browsersync */
 
-gulp.task('browserSync', function() {
+gulp.task('browserSync', () => {
     browsersync.init( {
-        server: {
-            baseDir: "dist",
-            directory:true
-        }
+      //proxy: "localhost:8080"
+      server: {
+        baseDir: "dist",
+        directory:true
+        } 
     });
-
-    gulp.watch("scss/*.scss", ['compileSass']);
-    gulp.watch("*.html", ['moveHTML']);
-    gulp.watch("imgs/**", ['moveImgs']);
+  
+    gulp.watch("src/scss/*.scss", ['compileSass']);
+    gulp.watch("src/*.html", ['moveHTML']);
+    gulp.watch("src/imgs/**", ['moveImgs']);
+    gulp.watch("src/imgs/**", ['moveFonts']);
     gulp.watch(["dist/**/*.*"]).on('change', browsersync.reload);
+  
+  });
 
-});
 
-/* setting up a clean */
+/* clean 'dist' folder */
 
-gulp.task('clean', function(){
-    del(['dist'], {force: true});
+gulp.task('clean', () => {
+    return gulp.src('dist', {read: false})
+        .pipe(clean());
 });
 
 /* gulp commands */
 
-gulp.task('serve',['browserSync']);
+  gulp.task('serve',['browserSync']);
 
-gulp.task("build", ["compileSass", "moveImgs"], function() {
-    return gulp.src(['*.html'])
-            .pipe(gulp.dest('dist'));
-});
+  gulp.task("build", ["compileSass", "moveFonts", "moveImgs" ,"moveHTML"]);
 
 /* gulp default */
 
-gulp.task("default", ["clean", "build"], function(){
+gulp.task("default", ["build"], () => {
     gulp.start("serve");
-});
+  });
 
 
