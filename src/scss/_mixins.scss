@@ -37,3 +37,20 @@ remember - mobile first!!
     @content;
   }
 }
+
+// font face mixin -------------------------------------------------------
+
+@mixin font-face($fontfamily, $fontname){
+  @font-face {
+  font-family: '#{$fontfamily}';
+    src: url('../fonts/#{$fontname}.eot');
+    src: url('../fonts/#{$fontfamily}.svg') format('svg'),
+          url('../fonts/#{$fontname}.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/#{$fontname}.woff') format('woff'),
+         url('../fonts/#{$fontname}.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+}
+
+//@include font-face(Whitney-Book, Whitney-Book); - use this include, change font as required
